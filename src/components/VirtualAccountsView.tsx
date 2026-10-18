@@ -9,10 +9,12 @@ import {
   CreditCard, 
   Sparkles, 
   CheckCircle2, 
-  AlertCircle 
+  AlertCircle,
+  QrCode 
 } from 'lucide-react';
 import { Currency } from '../types';
 import UtilityBrandLogo from './UtilityBrandLogo';
+import DepositQRCodeModal, { DepositQRCodeData } from './DepositQRCodeModal';
 
 interface VirtualAccountsViewProps {
   nairaBalance: number;
@@ -29,6 +31,7 @@ export default function VirtualAccountsView({
 }: VirtualAccountsViewProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>(Currency.NGN);
+  const [qrModalData, setQrModalData] = useState<DepositQRCodeData | null>(null);
   
   // Simulated instant bank transfer inbound state
   const [testAmount, setTestAmount] = useState<string>('25000');
@@ -176,6 +179,27 @@ export default function VirtualAccountsView({
                       NIP Real-time
                     </span>
                   </div>
+
+                  {/* QR Code Scan Trigger Button */}
+                  <div className="pt-3 border-t border-white/10 mt-3">
+                    <button
+                      type="button"
+                      onClick={() => setQrModalData({
+                        title: 'Providus NUBAN Deposit QR',
+                        subtitle: 'Scan with any banking app, Kuda, or OPAY to transfer Naira instantly without typing account digits.',
+                        depositType: 'bank',
+                        currency: Currency.NGN,
+                        addressOrAccount: virtualNuban.accountNumber,
+                        accountName: virtualNuban.accountName,
+                        bankOrNetworkName: virtualNuban.bankName,
+                        defaultAmount: 25000
+                      })}
+                      className="w-full py-2.5 px-4 rounded-xl bg-white/15 hover:bg-white/25 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-2 transition border border-white/20 cursor-pointer shadow-sm"
+                    >
+                      <QrCode className="w-4 h-4 text-rose-400" />
+                      <span>Generate Deposit QR Code (Scan to Pay)</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-200 dark:border-white/10">
@@ -232,6 +256,27 @@ export default function VirtualAccountsView({
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
                       GhIPSS Instant
                     </span>
+                  </div>
+
+                  {/* QR Code Scan Trigger Button */}
+                  <div className="pt-3 border-t border-white/10 mt-3">
+                    <button
+                      type="button"
+                      onClick={() => setQrModalData({
+                        title: 'Ghana MoMo Merchant QR',
+                        subtitle: 'Scan with MTN MoMo, Telecel Cash, or banking app to transfer Cedis directly to your Rubby wallet.',
+                        depositType: 'momo',
+                        currency: Currency.GHS,
+                        addressOrAccount: virtualGhanaMoMo.merchantNumber,
+                        accountName: virtualGhanaMoMo.merchantID,
+                        bankOrNetworkName: virtualGhanaMoMo.momoNetwork,
+                        defaultAmount: 150
+                      })}
+                      className="w-full py-2.5 px-4 rounded-xl bg-white/15 hover:bg-white/25 active:scale-98 text-white font-bold text-xs flex items-center justify-center gap-2 transition border border-white/20 cursor-pointer shadow-sm"
+                    >
+                      <QrCode className="w-4 h-4 text-amber-400" />
+                      <span>Generate Deposit QR Code (Scan to Pay)</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -340,6 +385,17 @@ export default function VirtualAccountsView({
           </div>
         </div>
       </div>
+
+      {/* Wallet Deposit QR Code Modal */}
+      <DepositQRCodeModal
+        isOpen={Boolean(qrModalData)}
+        onClose={() => setQrModalData(null)}
+        data={qrModalData}
+        onSimulateDeposit={(amount, currency, sender, bank) => {
+          onDepositSimulated(currency, amount, sender, bank);
+        }}
+        isLightMode={isLightMode}
+      />
     </div>
   );
 }

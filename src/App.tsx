@@ -707,6 +707,22 @@ export default function App() {
         onOpenDueDiligence={() => setShowDueDiligenceModal(true)}
         userTradeVolume={userTradeVolume}
         rubbyPoints={rubbyPoints}
+        rateAlerts={rateAlerts}
+        liveRates={liveRates}
+        onDeleteAlert={handleDeleteAlert}
+        onToggleAlert={handleToggleAlert}
+        onSimulatePriceSpike={() => {
+          setLiveRates(prev => ({
+            ...prev,
+            steam: { NGN: 910, GHS: 14.5 }
+          }));
+          triggerSystemNotification(
+            'Price Alert Triggered! 🚀',
+            'Steam Wallet surged to ₦910/$ (exceeded your alert target of ₦885/$).',
+            'Trade Steam Now',
+            () => handleSelectView('exchange')
+          );
+        }}
       />
 
       {/* MOBILE BOTTOM NAVIGATION BAR: Native Mobile Banking Standard */}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Zap, 
@@ -23,10 +23,18 @@ import {
   CheckCircle2,
   Menu,
   Activity,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Bell,
+  BellRing,
+  Trash2,
+  Plus,
+  AlertTriangle,
+  ArrowUpRight,
+  ArrowDownRight
 } from 'lucide-react';
-import { Currency } from '../types';
+import { Currency, RateAlert } from '../types';
 import RubbyLogo, { RubbyVectorMark } from './RubbyLogo';
+import BrandLogo from './BrandLogo';
 import { WorkspaceView } from '../App';
 
 interface HeaderProps {
@@ -39,6 +47,11 @@ interface HeaderProps {
   onOpenDueDiligence: () => void;
   userTradeVolume?: number;
   rubbyPoints?: number;
+  rateAlerts?: RateAlert[];
+  liveRates?: Record<string, { NGN: number; GHS: number }>;
+  onDeleteAlert?: (id: string) => void;
+  onToggleAlert?: (id: string, active: boolean) => void;
+  onSimulatePriceSpike?: () => void;
 }
 
 export default function Header({
@@ -50,11 +63,38 @@ export default function Header({
   onChangeCurrency,
   onOpenDueDiligence,
   userTradeVolume = 1200,
-  rubbyPoints = 250
+  rubbyPoints = 250,
+  rateAlerts = [],
+  liveRates = {},
+  onDeleteAlert,
+  onToggleAlert,
+  onSimulatePriceSpike
 }: HeaderProps) {
   const [isSolutionsMenuOpen, setIsSolutionsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAlertsMenuOpen, setIsAlertsMenuOpen] = useState(false);
+  const [dismissedAlertIds, setDismissedAlertIds] = useState<string[]>([]);
+
+  // Calculate triggered rate alerts based on live market movements
+  const triggeredAlerts = useMemo(() => {
+    return rateAlerts.filter(alert => {
+      if (!alert.isActive || dismissedAlertIds.includes(alert.id)) return false;
+      const brandRate = liveRates[alert.brandId];
+      if (!brandRate) return false;
+      const currentRate = alert.currency === Currency.NGN ? brandRate.NGN : brandRate.GHS;
+      if (alert.condition === 'above') {
+        return currentRate >= alert.targetRate;
+      } else {
+        return currentRate <= alert.targetRate;
+      }
+    });
+  }, [rateAlerts, liveRates, dismissedAlertIds]);
+
+  const handleDismissAlert = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDismissedAlertIds(prev => [...prev, id]);
+  };
 
   // Minimalist High-Finance Core Navigation: 5 clean, uncluttered anchors
   const highFinanceNav: { id: WorkspaceView; label: string; tag?: string }[] = [
@@ -311,7 +351,7 @@ export default function Header({
           </div>
         </nav>
 
-        {/* 3. REFINED UTILITY CONTROLS: CURRENCY, THEME, PROFILE & PRIMARY CTA */}
+        {/* 3. REFINED UTILITY CONTROLS: SEARCH, CURRENCY, THEME, PRICE ALERT BELL & PROFILE */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           
           {/* Quick Audit Trail / Search Button */}
@@ -373,6 +413,272 @@ export default function Header({
           >
             {isLightMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-400" />}
           </button>
+
+          {/* 🔔 VISUAL 'PRICE ALERT' NOTIFICATION BELL ICON (PULSES ON TRIGGER) */}
+          <div className="relative">
+            <button
+              type="button"
+              id="header-price-alerts-bell"
+              onClick={() => setIsAlertsMenuOpen(prev => !prev)}
+              className={`relative w-9 h-9 rounded-xl flex items-center justify-center border transition cursor-pointer ${
+                triggeredAlerts.length > 0 
+                  ? 'bg-rose-500/15 border-rose-500/50 text-rose-500 shadow-md shadow-rose-500/25 ring-2 ring-rose-500/20' 
+                  : isLightMode 
+                    ? 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700' 
+                    : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-300'
+              }`}
+              title={
+                triggeredAlerts.length > 0
+                  ? `🚀 Rate Target Hit! (${triggeredAlerts.length} Active Alert Triggered)`
+                  : 'Market Price Movement Alerts'
+              }
+            >
+              {triggeredAlerts.length > 0 ? (
+                <BellRing className="w-4 h-4 text-rose-500 animate-bounce" />
+              ) : (
+                <Bell className="w-4 h-4" />
+              )}
+
+              {/* Glowing Pulse Aura when Rate Alert is Triggered */}
+              {triggeredAlerts.length > 0 && (
+                <>
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-rose-500 animate-ping opacity-80 pointer-events-none" />
+                  <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-600 text-white font-mono font-black text-[9px] flex items-center justify-center border-2 border-white dark:border-[#080A12] shadow-md shadow-rose-600/50">
+                    {triggeredAlerts.length}
+                  </span>
+                </>
+              )}
+
+              {/* Gentle indicator when active alerts exist but not yet triggered */}
+              {triggeredAlerts.length === 0 && rateAlerts.some(a => a.isActive) && (
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white dark:ring-black" />
+              )}
+            </button>
+
+            {/* Price Alerts Dropdown Menu */}
+            <AnimatePresence>
+              {isAlertsMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setIsAlertsMenuOpen(false)} 
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                    className={`absolute top-full right-0 mt-2.5 w-80 sm:w-96 p-4 rounded-3xl border shadow-2xl z-50 backdrop-blur-2xl ${
+                      isLightMode ? 'bg-white/98 border-slate-200' : 'bg-[#0B0E1B]/98 border-white/10'
+                    }`}
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
+                      <div className="flex items-center gap-2">
+                        <Bell className="w-4 h-4 text-rose-500" />
+                        <span className="text-xs font-bold text-slate-900 dark:text-white font-sans">
+                          Market Price Alerts
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 font-bold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Live Ticker Active
+                      </span>
+                    </div>
+
+                    {/* Section 1: TRIGGERED ALERTS BANNER (TARGET HIT!) */}
+                    {triggeredAlerts.length > 0 && (
+                      <div className="my-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-rose-500 font-mono flex items-center gap-1">
+                            <Sparkles className="w-3 h-3" />
+                            Target Price Reached!
+                          </span>
+                          <span className="text-[9px] font-mono text-slate-400">
+                            {triggeredAlerts.length} triggered
+                          </span>
+                        </div>
+
+                        {triggeredAlerts.map(alert => {
+                          const currentBrandRate = liveRates[alert.brandId];
+                          const liveVal = currentBrandRate 
+                            ? alert.currency === Currency.NGN ? currentBrandRate.NGN : currentBrandRate.GHS 
+                            : alert.targetRate;
+                          const currencySymbol = alert.currency === Currency.NGN ? '₦' : 'GH₵';
+
+                          return (
+                            <div 
+                              key={alert.id}
+                              className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/25 space-y-2"
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex items-center gap-2.5">
+                                  <BrandLogo brandId={alert.brandId} size="sm" className="w-6 h-6 rounded-lg" />
+                                  <div>
+                                    <h5 className="text-xs font-bold text-slate-900 dark:text-white">
+                                      {alert.brandName}
+                                    </h5>
+                                    <div className="flex items-center gap-1.5 text-[10px] font-mono">
+                                      <span className="text-slate-400">Target: {currencySymbol}{alert.targetRate}/$</span>
+                                      <span className="text-emerald-500 font-bold flex items-center">
+                                        <ArrowUpRight className="w-3 h-3" />
+                                        Now: {currencySymbol}{liveVal}/$
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleDismissAlert(alert.id, e)}
+                                  className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1"
+                                  title="Dismiss alert"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              <div className="flex items-center justify-between pt-1">
+                                <span className="text-[9px] font-mono text-slate-400">
+                                  Condition: {alert.condition === 'above' ? '≥ Target' : '≤ Target'}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    onSelectView('exchange');
+                                    setIsAlertsMenuOpen(false);
+                                  }}
+                                  className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-[10px] font-bold flex items-center gap-1 transition shadow-xs cursor-pointer"
+                                >
+                                  <Zap className="w-3 h-3 text-amber-300" />
+                                  <span>Trade at {currencySymbol}{liveVal}/$</span>
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Section 2: Active Market Watchlist */}
+                    <div className="my-3 space-y-2 max-h-48 overflow-y-auto pr-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+                          Active Monitors ({rateAlerts.length})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onSelectView('rates');
+                            setIsAlertsMenuOpen(false);
+                          }}
+                          className="text-[10px] text-rose-500 hover:text-rose-600 font-bold"
+                        >
+                          Manage All
+                        </button>
+                      </div>
+
+                      {rateAlerts.length === 0 ? (
+                        <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-white/10 text-center space-y-1">
+                          <p className="text-xs text-slate-400">No active price alerts set.</p>
+                          <p className="text-[10px] text-slate-500">Configure target notifications for Steam, Apple, Razer, or Amazon.</p>
+                        </div>
+                      ) : (
+                        rateAlerts.map(alert => {
+                          const brandRate = liveRates[alert.brandId];
+                          const liveVal = brandRate 
+                            ? alert.currency === Currency.NGN ? brandRate.NGN : brandRate.GHS 
+                            : alert.targetRate;
+                          const currencySymbol = alert.currency === Currency.NGN ? '₦' : 'GH₵';
+                          const isTriggered = triggeredAlerts.some(t => t.id === alert.id);
+
+                          return (
+                            <div
+                              key={alert.id}
+                              className={`p-2.5 rounded-xl border transition flex items-center justify-between gap-2 ${
+                                isTriggered 
+                                  ? 'bg-rose-500/10 border-rose-500/30' 
+                                  : isLightMode ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/5'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <BrandLogo brandId={alert.brandId} size="xs" className="w-5 h-5 rounded" />
+                                <div className="truncate">
+                                  <span className="text-xs font-bold block truncate text-slate-900 dark:text-white">
+                                    {alert.brandName}
+                                  </span>
+                                  <span className="text-[10px] font-mono text-slate-400">
+                                    Target: {currencySymbol}{alert.targetRate}/$ · Live: <strong className="text-slate-800 dark:text-slate-200">{currencySymbol}{liveVal}/$</strong>
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                {onToggleAlert && (
+                                  <button
+                                    type="button"
+                                    onClick={() => onToggleAlert(alert.id, !alert.isActive)}
+                                    className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold transition cursor-pointer ${
+                                      alert.isActive 
+                                        ? 'bg-emerald-500/15 text-emerald-500' 
+                                        : 'bg-slate-200 dark:bg-white/10 text-slate-400'
+                                    }`}
+                                  >
+                                    {alert.isActive ? 'Active' : 'Paused'}
+                                  </button>
+                                )}
+
+                                {onDeleteAlert && (
+                                  <button
+                                    type="button"
+                                    onClick={() => onDeleteAlert(alert.id)}
+                                    className="p-1 rounded text-slate-400 hover:text-rose-500 transition cursor-pointer"
+                                    title="Delete alert"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+
+                    {/* Section 3: Quick Action Footer */}
+                    <div className="pt-2 border-t border-slate-100 dark:border-white/10 flex items-center justify-between gap-2">
+                      {onSimulatePriceSpike && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onSimulatePriceSpike();
+                            setDismissedAlertIds([]);
+                          }}
+                          className="px-2.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 text-[10px] font-mono font-bold flex items-center gap-1 transition cursor-pointer"
+                          title="Simulate a market rate surge to test alert pulse"
+                        >
+                          <Activity className="w-3 h-3 text-rose-500" />
+                          <span>Simulate Price Spike</span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onSelectView('rates');
+                          setIsAlertsMenuOpen(false);
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-[11px] font-bold flex items-center gap-1 transition shadow-xs cursor-pointer ml-auto"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>Add Alert</span>
+                      </button>
+                    </div>
+
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Executive Trader Profile Chip */}
           <div className="relative">

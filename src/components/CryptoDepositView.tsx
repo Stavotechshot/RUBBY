@@ -11,9 +11,11 @@ import {
   RefreshCw,
   Clock,
   Sparkles,
-  Info
+  Info,
+  QrCode
 } from 'lucide-react';
 import { Currency } from '../types';
+import DepositQRCodeModal from './DepositQRCodeModal';
 
 interface CryptoDepositViewProps {
   nairaBalance: number;
@@ -141,6 +143,7 @@ export default function CryptoDepositView({
   
   // Copy feedback
   const [copiedAddress, setCopiedAddress] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
   
   // Simulation of inbound crypto transaction
   const [testDepositAmount, setTestDepositAmount] = useState('100'); // $100 USDT
@@ -364,14 +367,25 @@ export default function CryptoDepositView({
               </span>
               <div className="flex items-center justify-between gap-2 p-3 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 font-mono text-xs text-slate-900 dark:text-white break-all">
                 <span>{selectedNetwork.address}</span>
-                <button
-                  type="button"
-                  onClick={() => handleCopy(selectedNetwork.address)}
-                  className="p-1.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition cursor-pointer shrink-0"
-                  title="Copy address"
-                >
-                  {copiedAddress ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                </button>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setShowQRModal(true)}
+                    className="p-1.5 px-2.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 font-sans font-bold text-xs transition cursor-pointer flex items-center gap-1"
+                    title="Generate QR code for instant scanning"
+                  >
+                    <QrCode className="w-3.5 h-3.5" />
+                    <span>QR Code</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(selectedNetwork.address)}
+                    className="p-1.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition cursor-pointer"
+                    title="Copy address"
+                  >
+                    {copiedAddress ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               {/* Explorer Link */}
@@ -460,6 +474,35 @@ export default function CryptoDepositView({
           </div>
         </div>
       </div>
+
+      {/* Crypto Deposit QR Code Modal */}
+      <DepositQRCodeModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+        data={{
+          title: `${selectedAsset.symbol} Deposit QR`,
+          subtitle: `Scan with TrustWallet, Binance, MetaMask, or Phantom to send ${selectedAsset.name} via ${selectedNetwork.name}.`,
+          depositType: 'crypto',
+          currency: payoutCurrency,
+          cryptoSymbol: selectedAsset.symbol,
+          addressOrAccount: selectedNetwork.address,
+          bankOrNetworkName: selectedNetwork.name,
+          defaultAmount: parseFloat(testDepositAmount) || 100
+        }}
+        onSimulateDeposit={(amount, currency, sender, network) => {
+          const rate = currency === Currency.NGN ? selectedAsset.rateNGN : selectedAsset.rateGHS;
+          const fiatPayout = Math.round(amount * rate);
+          onCryptoCredited(currency, fiatPayout, `${amount} ${selectedAsset.symbol}`, selectedAsset.symbol);
+          setConfirmedTx({
+            hash: `0x${Math.random().toString(16).substring(2, 10)}...${Math.random().toString(16).substring(2, 6)}`,
+            amount: `${amount} ${selectedAsset.symbol}`,
+            fiatPayout,
+            currency,
+            network
+          });
+        }}
+        isLightMode={isLightMode}
+      />
     </div>
   );
 }

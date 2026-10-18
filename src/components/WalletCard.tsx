@@ -22,7 +22,9 @@ import {
   Edit2,
   Sparkles,
   QrCode,
-  Smartphone
+  Smartphone,
+  ScanFace,
+  Fingerprint
 } from 'lucide-react';
 import { Currency, WalletTransaction, Trade } from '../types';
 
@@ -82,6 +84,11 @@ export default function WalletCard({
   const [isSimulatedScanning, setIsSimulatedScanning] = useState(false);
   const [hasScannedSuccessfully, setHasScannedSuccessfully] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState(false);
+  
+  // Biometric Withdrawal Prompt States
+  const [isBiometricPromptOpen, setIsBiometricPromptOpen] = useState(false);
+  const [isBiometricScanning, setIsBiometricScanning] = useState(false);
+  const [biometricSuccess, setBiometricSuccess] = useState(false);
   
   // Daily Goal States
   const [dailyGoal, setDailyGoal] = useState(() => {
@@ -196,6 +203,37 @@ export default function WalletCard({
     }
     if (parsedAmount > balance) {
       alert('Insufficient wallet balance.');
+      return;
+    }
+
+    const isBiometricsOn = localStorage.getItem('rubby_biometrics_enabled') === 'true';
+
+    if (isBiometricsOn) {
+      setIsBiometricPromptOpen(true);
+      setIsBiometricScanning(true);
+      setBiometricSuccess(false);
+
+      setTimeout(() => {
+        setIsBiometricScanning(false);
+        setBiometricSuccess(true);
+
+        setTimeout(() => {
+          setIsBiometricPromptOpen(false);
+          onBalanceChange(
+            activeTab, 
+            parsedAmount, 
+            false, 
+            'withdrawal', 
+            activeTab === Currency.NGN 
+              ? `Biometric-Verified Payout to ${bankName} (${accountNo})`
+              : `Biometric-Verified MoMo Cashout to ${momoProvider} (${phoneNumber})`
+          );
+          setSuccessDetails(`Successfully authorized via FaceID and withdrew ${activeTab === Currency.NGN ? '₦' : 'GH₵'}${parsedAmount.toLocaleString()}. Funds are on their way!`);
+          setAmount('');
+          setAccountNo('');
+          setPhoneNumber('');
+        }, 1200);
+      }, 1600);
       return;
     }
 
@@ -847,6 +885,56 @@ export default function WalletCard({
                   </div>
                 </form>
               )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Biometric FaceID/TouchID Authorization Prompt Modal */}
+      <AnimatePresence>
+        {isBiometricPromptOpen && (
+          <div className="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-[90] backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-[#090C18] border border-rose-500/40 rounded-3xl p-6 w-full max-w-xs shadow-2xl relative text-white text-center"
+            >
+              <div className="w-20 h-20 mx-auto mb-4 relative flex items-center justify-center">
+                {/* Viewfinder corner brackets */}
+                <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-rose-500 rounded-tl-lg" />
+                <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-rose-500 rounded-tr-lg" />
+                <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-rose-500 rounded-bl-lg" />
+                <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-rose-500 rounded-br-lg" />
+
+                {isBiometricScanning && (
+                  <motion.div
+                    animate={{ top: ['15%', '85%', '15%'] }}
+                    transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute left-2 right-2 h-0.5 bg-rose-500 shadow-md shadow-rose-500"
+                  />
+                )}
+
+                {biometricSuccess ? (
+                  <Check className="w-10 h-10 text-emerald-400 stroke-[3]" />
+                ) : (
+                  <ScanFace className={`w-10 h-10 ${isBiometricScanning ? 'text-rose-400 animate-pulse' : 'text-slate-400'}`} />
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-rose-400 font-bold block">
+                  Apple Secure Enclave
+                </span>
+                <h4 className="text-sm font-bold text-white">
+                  {biometricSuccess ? 'FaceID Authorized!' : 'Scan FaceID to Payout'}
+                </h4>
+                <p className="text-[11px] text-slate-400 leading-tight">
+                  {biometricSuccess 
+                    ? 'Cryptographic withdrawal token generated.' 
+                    : `Confirming cashout of ${activeTab === Currency.NGN ? '₦' : 'GH₵'}${parseFloat(amount || '0').toLocaleString()}...`}
+                </p>
+              </div>
             </motion.div>
           </div>
         )}
