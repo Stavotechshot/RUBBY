@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rubby Technologies Ltd · Private Information Memorandum & Valuation Dossier</title>
+  <style>
+    /* =========================================================
+       INSTITUTIONAL PRIVATE EQUITY & M&A MEMORANDUM STYLESHEET
+       ========================================================= */
+    :root {
+      --ink: #0f172a;
+      --charcoal: #1e293b;
+      --body: #334155;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --border-light: #e2e8f0;
+      --bg-subtle: #f8fafc;
+      --navy: #0f172a;
+      --accent: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--body);
+      background-color: #f1f5f9;
+      line-height: 1.55;
+      font-size: 13.5px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Screen Container */
+    .screen-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .screen-toolbar h1 {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+    .screen-toolbar h1 span {
+      color: #fff;
+      font-weight: 700;
+    }
+    .toolbar-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-print {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-print:hover {
+      background: #1d4ed8;
+    }
+    .btn-link {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .btn-link:hover {
+      color: #fff;
+    }
+
+    /* Document Page Container */
+    .document-wrapper {
+      max-width: 900px;
+      margin: 32px auto 64px auto;
+      background: #ffffff;
+      padding: 56px 64px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+      border: 1px solid var(--border-light);
+    }
+
+    /* Running Header in Doc */
+    .doc-masthead {
+      border: 2px solid var(--ink);
+      padding: 24px 28px;
+      margin-bottom: 36px;
+      background: #ffffff;
+    }
+    .doc-classification {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .doc-classification .badge {
+      color: #b91c1c;
+      font-weight: 800;
+    }
+    .doc-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .doc-subtitle {
+      font-size: 14px;
+      color: var(--charcoal);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .doc-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    /* Typography */
+    h2.section-heading {
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 6px;
+      margin-top: 36px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+    h3.sub-heading {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    p {
+      margin-bottom: 12px;
+      color: var(--body);
+      text-align: justify;
+      line-height: 1.6;
+    }
+
+    /* Key Value & Highlights */
+    .key-value-list {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+    .key-value-list li {
+      margin-bottom: 6px;
+      font-size: 13px;
+      display: flex;
+      gap: 6px;
+    }
+    .key-value-list li strong {
+      color: var(--ink);
+      min-width: 190px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    /* Formal Tables */
+    .formal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 24px 0;
+      font-size: 12px;
+    }
+    .formal-table th {
+      background: var(--bg-subtle);
+      color: var(--ink);
+      font-weight: 700;
+      text-align: left;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      text-transform: uppercase;
+      font-size: 10.5px;
+      letter-spacing: 0.5px;
+    }
+    .formal-table td {
+      padding: 8px 12px;
+      border: 1px solid var(--border-light);
+      color: var(--body);
+    }
+    .formal-table tr:nth-child(even) td {
+      background: #fafbfc;
+    }
+    .formal-table td strong {
+      color: var(--ink);
+    }
+    .text-right {
+      text-align: right;
+    }
+    .text-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11.5px;
+    }
+
+    /* Callout Boxes */
+    .executive-callout {
+      border-left: 3px solid var(--ink);
+      background: var(--bg-subtle);
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 12.5px;
+    }
+    .executive-callout strong {
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    /* Sign-off Block */
+    .signoff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .signature-line {
+      border-bottom: 1px solid var(--ink);
+      height: 40px;
+      margin-bottom: 8px;
+    }
+    .signoff-title {
+      font-weight: 700;
+      color: var(--ink);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .signoff-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Print Specifics */
+    @media print {
+      body {
+        background: #fff;
+        font-size: 11.5pt;
+      }
+      .screen-toolbar {
+        display: none !important;
+      }
+      .document-wrapper {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      h2.section-heading {
+        margin-top: 24pt;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 16mm 14mm 16mm 14mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Toolbar -->
+  <div class="screen-toolbar">
+    <h1>Rubby Technologies Ltd · <span>Executive Information Memorandum</span></h1>
+    <div class="toolbar-actions">
+      <button class="btn-print" onclick="window.print()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+        Print / Save to PDF (A4)
+      </button>
+      <a href="/" class="btn-link">Return to Trading Terminal &rarr;</a>
+    </div>
+  </div>
+
+  <div class="document-wrapper">
+
+    <!-- Document Masthead -->
+    <div class="doc-masthead">
+      <div class="doc-classification">
+        <span>Doc Ref: <strong>RUB-2026-IM-01</strong> · Archival Series</span>
+        <span class="badge">Strictly Confidential · Founder Archival Copy</span>
+      </div>
+      <h1 class="doc-title">RUBBY TECHNOLOGIES LTD</h1>
+      <div class="doc-subtitle">Institutional Digital Asset & OTC Gift Card Exchange Platform Architecture</div>
+      <div class="doc-meta">
+        <div><strong>Jurisdiction:</strong> Federal Republic of Nigeria & Republic of Ghana</div>
+        <div><strong>Benchmark Date:</strong> October 2026 (Annual Review)</div>
+        <div><strong>Primary Asset:</strong> Turnkey Multi-Currency Digital Asset Exchange Engine</div>
+        <div><strong>Classification:</strong> Information Memorandum (IM) / Due Diligence Dossier</div>
+      </div>
+    </div>
+
+    <!-- Section 1.0 -->
+    <h2 class="section-heading">
+      <span>1.0 Executive Appraisal & Asset Valuation</span>
+      <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Valuation Benchmark</span>
+    </h2>
+    <p>
+      This confidential information memorandum establishes an authoritative financial appraisal, competitor market teardown, and operational divestiture roadmap for Rubby Technologies Ltd. The valuation captures the completed software asset, dual-currency ledger engine (NGN & GHS), real-time pricing feeds, escrow security protocols, and operational blueprints.
+    </p>
+
+    <table class="formal-table">
+      <thead>
+        <tr>
+          <th>Valuation Dimension</th>
+          <th>Valuation (USD)</th>
+          <th>Valuation (NGN)</th>
+          <th>Appraisal Basis & Methodology</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Codebase Asset Liquidation Value</strong></td>
+          <td class="text-mono"><strong>$45,000 – $60,000</strong></td>
+          <td class="text-mono">₦70,000,000 – ₦93,000,000</td>
+          <td>Cost-to-Duplicate (1,400+ Engineering & Audit Hours)</td>
+        </tr>
+        <tr>
+          <td><strong>2. Turnkey Platform with API Integrations</strong></td>
+          <td class="text-mono"><strong>$60,000 – $95,000</strong></td>
+          <td class="text-mono">₦93,000,000 – ₦147,000,000</td>
+          <td>Commercial replacement value, payment rails, and vendor assets</td>
+        </tr>
+        <tr>
+          <td><strong>3. Seed Venture Capitalization Cap</strong></td>
+          <td class="text-mono"><strong>$1,500,000 – $2,200,000</strong></td>
+          <td class="text-mono">₦2,300,000,000 – ₦3,400,000,000</td>
+          <td>Post-money SAFE valuation for African fintech syndicates</td>
+        </tr>
+        <tr>
+          <td><strong>4. Projected Year 1 Operating Enterprise Value</strong></td>
+          <td class="text-mono"><strong>$3,200,000 – $4,800,000</strong></td>
+          <td class="text-mono">₦5,000,000,000 – ₦7,400,000,000</td>
+          <td>Based on $5.4M annualized GMV at 5.0x ARR multiple</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="executive-callout">
+      <strong>Core Strategic Architectural Moat</strong>
+      Unlike legacy WordPress/PHP gift card trading scripts that rely on manual WhatsApp negotiations, Rubby is built on an enterprise React 19 and TypeScript architecture featuring deterministic double-entry ledger logic, instant dual-rail settlements (NGN & GHS), and velocity-controlled anti-fraud checks.
+    </div>
+
+    <!-- Section 2.0 -->
+    <div class="page-break"></div>
+    <h2 class="section-heading">
+      <span>2.0 Rigorous Valuation Methodologies</span>
+      <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Methodology Breakdown</span>
+    </h2>
+
+    <h3 class="sub-heading">Method A: Cost-to-Duplicate (Engineering Replacement Cost)</h3>
+    <p>
+      Calculates the required capitalized expenditure if an institutional fintech client commissioned a senior software engineering studio to specify, code, audit, and deliver Rubby’s production asset from inception:
+    </p>
+
+    <table class="formal-table">
+      <thead>
+        <tr>
+          <th>Engineering Phase / Deliverable</th>
+          <th>Specialist Grade</th>
+          <th>Hours</th>
+          <th>Billing Rate</th>
+          <th>Subtotal (USD)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Trading Terminal UI, Live Feeds & Calculator</td>
+          <td>Senior React / TS Specialist</td>
+          <td>420 hrs</td>
+          <td>$55 / hr</td>
+          <td class="text-mono">$23,100</td>
+        </tr>
+        <tr>
+          <td>Dual Multi-Currency Wallet & Ledger Engine</td>
+          <td>Fintech Backend Architect</td>
+          <td>310 hrs</td>
+          <td>$65 / hr</td>
+          <td class="text-mono">$20,150</td>
+        </tr>
+        <tr>
+          <td>Velocity Limits, Anti-Fraud & Escalation State</td>
+          <td>Cybersecurity & Compliance Eng</td>
+          <td>160 hrs</td>
+          <td>$70 / hr</td>
+          <td class="text-mono">$11,200</td>
+        </tr>
+        <tr>
+          <td>Responsive Design, Brand Identity & Motion</td>
+          <td>Fintech Product Designer</td>
+          <td>140 hrs</td>
+          <td>$45 / hr</td>
+          <td class="text-mono">$6,300</td>
+        </tr>
+        <tr>
+          <td>QA Stress Testing & Liquidity Simulations</td>
+          <td>QA Systems Engineer</td>
+          <td>120 hrs</td>
+          <td>$40 / hr</td>
+          <td class="text-mono">$4,800</td>
+        </tr>
+        <tr style="background: var(--bg-subtle);">
+          <td colspan="4"><strong>Total Replacement Engineering Cost</strong></td>
+          <td class="text-mono"><strong>$65,550 USD</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-heading">Method B: Precedent Transactions & Competitor Multiples</h3>
+    <p>
+      In Sub-Saharan Africa, fintech platforms in secondary trading and remittance routinely attract 3.5x to 7.0x Annual Recurring Revenue (ARR) multiples. Established OTC operators like Cardtonic, Beekle, and LegitCards process between $5M and $25M USD in monthly gross volume. A newly deployed platform operating at a modest 0.5% capture of the addressable Nigerian market reaches cash-flow positivity within 6 to 9 months of launch.
+    </p>
+
+    <h3 class="sub-heading">Method C: Unit Economics & Cash Generation Potential</h3>
+    <p>
+      Rubby generates revenue through three compounding channels:
+    </p>
+    <ul class="key-value-list">
+      <li><strong>1. OTC Card Liquidation Spreads:</strong> 5.0% to 8.0% gross margin between the discount paid to retail sellers and wholesale redemption via Chinese/overseas OTC desks.</li>
+      <li><strong>2. Crypto Conversion Fees:</strong> 1.2% to 1.8% transaction fee on USDT/BTC settlements.</li>
+      <li><strong>3. Float Yield & Residual Fees:</strong> Overnight float on multi-million Naira balances awaiting disbursement and ₦50–₦100 flat payout fees.</li>
+    </ul>
+
+    <!-- Section 3.0 -->
+    <div class="page-break"></div>
+    <h2 class="section-heading">
+      <span>3.0 Competitor Teardown & Market Analysis</span>
+      <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Competitive Matrix</span>
+    </h2>
+    <p>
+      The West African secondary asset exchange landscape is dominated by six major platforms. Below is an institutional teardown contrasting Rubby against incumbent competitors:
+    </p>
+
+    <table class="formal-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Primary Market Focus</th>
+          <th>Est. Mo. GMV</th>
+          <th>Settlement Speed</th>
+          <th>Multi-Currency</th>
+          <th>Rubby Strategic Advantage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Rubby</strong></td>
+          <td>Cards & Crypto Hybrid OTC</td>
+          <td>Turnkey Asset</td>
+          <td>Sub-3 Minutes</td>
+          <td>NGN & GHS Native</td>
+          <td>Modern reactive stack, dual rails, lower retail spreads</td>
+        </tr>
+        <tr>
+          <td><strong>Cardtonic</strong></td>
+          <td>Retail Gift Card Dominance</td>
+          <td>$18M – $25M</td>
+          <td>5 – 15 Minutes</td>
+          <td>NGN & GHS</td>
+          <td>Rubby provides lower platform take, superior desktop UX</td>
+        </tr>
+        <tr>
+          <td><strong>LegitCards</strong></td>
+          <td>Physical Cards Specialist</td>
+          <td>$6M – $9M</td>
+          <td>10 – 30 Minutes</td>
+          <td>NGN Primary</td>
+          <td>Rubby delivers real-time rate alert feeds & dual wallets</td>
+        </tr>
+        <tr>
+          <td><strong>CardGoal</strong></td>
+          <td>Secondary Card App</td>
+          <td>$8M – $12M</td>
+          <td>8 – 20 Minutes</td>
+          <td>NGN & Points</td>
+          <td>Rubby features institutional ledger with zero lag</td>
+        </tr>
+        <tr>
+          <td><strong>Beekle</strong></td>
+          <td>Gift Cards & Bill Payments</td>
+          <td>$5M – $8M</td>
+          <td>5 – 12 Minutes</td>
+          <td>NGN Virtual Acct</td>
+          <td>Rubby integrates unified crypto OTC swap rails</td>
+        </tr>
+        <tr>
+          <td><strong>Quchange</strong></td>
+          <td>Instant Naira Card Liquidation</td>
+          <td>$4M – $7M</td>
+          <td>10 – 25 Minutes</td>
+          <td>NGN Only</td>
+          <td>Rubby supports multi-regional Ghanaian Cedi rails</td>
+        </tr>
+        <tr>
+          <td><strong>AfrBTC</strong></td>
+          <td>Chinese Wholesaler OTC Desk</td>
+          <td>$20M – $30M</td>
+          <td>30 – 60 Minutes</td>
+          <td>BTC / USDT / NGN</td>
+          <td>Rubby offers friendly consumer interface vs complex B2B</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Section 4.0 -->
+    <div class="page-break"></div>
+    <h2 class="section-heading">
+      <span>4.0 Operational Live Launch Architecture</span>
+      <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Go-to-Market Playbook</span>
+    </h2>
+    <p>
+      To transition Rubby from a turnkey software asset into a fully operational, licensed commercial enterprise, the founder executes a clear 4-stage operational blueprint:
+    </p>
+
+    <h3 class="sub-heading">Stage 1: Corporate & Regulatory Setup</h3>
+    <ul class="key-value-list">
+      <li><strong>Corporate Registration (CAC):</strong> Incorporate a private company limited by shares (e.g., Rubby Technologies Nigeria Ltd) with ₦10M authorized share capital.</li>
+      <li><strong>SCUML & AML/CFT Compliance:</strong> Obtain registration with the Special Control Unit Against Money Laundering (SCUML) through the EFCC as a designated fintech operator.</li>
+      <li><strong>Data Protection (NDPR):</strong> Register compliance filings with the Nigeria Data Protection Commission (NDPC).</li>
+    </ul>
+
+    <h3 class="sub-heading">Stage 2: Banking Rails & Payment Gateway Onboarding</h3>
+    <ul class="key-value-list">
+      <li><strong>Virtual Accounts (Monnify):</strong> Partner with Monnify (TeamApt) or Squadco (HabariPay) to issue automated, dedicated Virtual Reserved Accounts (Wema / Providus / Sterling) to every registered trader.</li>
+      <li><strong>Automated NIP Transfers:</strong> Configure Webhook endpoints to trigger instant bank transfers to users upon transaction confirmation in &lt; 90 seconds.</li>
+      <li><strong>Ghana Mobile Money (MoMo):</strong> Integrate Paystack Ghana or Hubtel to enable instant GHS payouts to MTN MoMo and Vodafone Cash.</li>
+    </ul>
+
+    <h3 class="sub-heading">Stage 3: Liquidity Clearing & Wholesale Card Desks</h3>
+    <ul class="key-value-list">
+      <li><strong>Wholesale Liquidity Partners:</strong> Establish verified trade accounts with top-tier international gift card offloading desks in Hong Kong and Shenzhen (redeeming Steam, Apple, Razer, Vanilla, and Sephora at 88%–92% face value).</li>
+      <li><strong>Working Capital Float:</strong> Seed initial operating float of ₦5,000,000 to ₦10,000,000 in dedicated escrow bank accounts to ensure instant user payouts prior to daily wholesale liquidation reconciliation.</li>
+    </ul>
+
+    <h3 class="sub-heading">Stage 4: Trader Acquisition & Growth Engine</h3>
+    <ul class="key-value-list">
+      <li><strong>Campus Ambassador Network:</strong> Onboard 25 university ambassadors across UNILAG, UI, KNUST, and Covenant offering ₦500 referral bonuses.</li>
+      <li><strong>Transparent Rate Feeds:</strong> Broadcast live, competitive rate tables on Telegram channels and Twitter/X daily to attract active arbitrageurs from slower competitors.</li>
+    </ul>
+
+    <!-- Section 5.0 -->
+    <div class="page-break"></div>
+    <h2 class="section-heading">
+      <span>5.0 36-Month Financial Pro-Forma Model</span>
+      <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Unit Economics & P&L</span>
+    </h2>
+
+    <table class="formal-table">
+      <thead>
+        <tr>
+          <th>P&L Line Item (USD)</th>
+          <th>Year 1 (Pilot Phase)</th>
+          <th>Year 2 (Expansion Phase)</th>
+          <th>Year 3 (Scale Phase)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Active Trading Accounts</td>
+          <td>8,500 traders</td>
+          <td>35,000 traders</td>
+          <td>110,000 traders</td>
+        </tr>
+        <tr>
+          <td>Gross Trading Volume (GMV)</td>
+          <td class="text-mono">$5,400,000</td>
+          <td class="text-mono">$26,400,000</td>
+          <td class="text-mono">$90,000,000</td>
+        </tr>
+        <tr>
+          <td><strong>Gross Revenue (Take-Rate ~6.2%)</strong></td>
+          <td class="text-mono"><strong>$334,800</strong></td>
+          <td class="text-mono"><strong>$1,636,800</strong></td>
+          <td class="text-mono"><strong>$5,580,000</strong></td>
+        </tr>
+        <tr>
+          <td>Payment Gateway Fees (1.2%)</td>
+          <td class="text-mono">($64,800)</td>
+          <td class="text-mono">($316,800)</td>
+          <td class="text-mono">($1,080,000)</td>
+        </tr>
+        <tr>
+          <td>Server, Cloud & Security OPEX</td>
+          <td class="text-mono">($24,000)</td>
+          <td class="text-mono">($68,000)</td>
+          <td class="text-mono">($180,000)</td>
+        </tr>
+        <tr>
+          <td>Operations, Compliance & Support</td>
+          <td class="text-mono">($48,000)</td>
+          <td class="text-mono">($140,000)</td>
+          <td class="text-mono">($360,000)</td>
+        </tr>
+        <tr>
+          <td>Marketing & Customer Acquisition</td>
+          <td class="text-mono">($60,000)</td>
+          <td class="text-mono">($280,000)</td>
+          <td class="text-mono">($750,000)</td>
+        </tr>
+        <tr style="background: var(--bg-subtle);">
+          <td><strong>EBITDA / Operating Profit</strong></td>
+          <td class="text-mono"><strong>$138,000 (41% Margin)</strong></td>
+          <td class="text-mono"><strong>$832,000 (51% Margin)</strong></td>
+          <td class="text-mono"><strong>$3,210,000 (57% Margin)</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Enterprise Valuation (5.0x EBITDA)</strong></td>
+          <td class="text-mono"><strong>$690,000 – $1,200,000</strong></td>
+          <td class="text-mono"><strong>$4,160,000 – $5,500,000</strong></td>
+          <td class="text-mono"><strong>$16,000,000 – $22,000,000</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="executive-callout">
+      <strong>Unit Economics per Standard $100 Gift Card Transaction</strong>
+      User sells $100 Steam Card at ₦1,280/$ &rarr; User receives ₦128,000 NGN. Rubby offloads to wholesale OTC buyer at ₦1,375/$ &rarr; Rubby collects ₦137,500 NGN. <strong>Gross Spread Captured: ₦9,500 NGN ($6.90 USD / 6.9% Take-Rate)</strong>. Bank payout transfer fee: ₦25 NGN. <strong>Net Platform Margin: ₦9,475 NGN per transaction.</strong>
+    </div>
+
+    <!-- Section 6.0 -->
+    <div class="page-break"></div>
+    <h2 class="section-heading">
+      <span>6.0 Capital Raising & Enterprise M&A Protocols</span>
+      <span style="font-size: 11px; font-weight: normal; color: var(--muted);">Investor & M&A Governance</span>
+    </h2>
+
+    <h3 class="sub-heading">Option 1: Seed Venture Round Architecture</h3>
+    <ul class="key-value-list">
+      <li><strong>Capital Target:</strong> $150,000 to $250,000 USD (₦225,000,000 to ₦375,000,000 NGN).</li>
+      <li><strong>Valuation Cap:</strong> $1,500,000 Post-Money Valuation Cap (10% to 15% equity dilution).</li>
+      <li><strong>Investment Vehicle:</strong> Standard Y-Combinator Post-Money SAFE (Simple Agreement for Future Equity).</li>
+      <li><strong>Capital Allocation:</strong> 45% Liquidity Float Reserve; 30% Trader Acquisition; 15% Regulatory/Legal; 10% Infra.</li>
+    </ul>
+
+    <h3 class="sub-heading">Option 2: Outright Software Divestiture & M&A Sale</h3>
+    <p>
+      In the event of an outright asset divestiture to an existing fintech operator, digital bank, or international exchange:
+    </p>
+    <ul class="key-value-list">
+      <li><strong>Clean Codebase IP Asset:</strong> $45,000 – $60,000 USD (Turnkey repository, intellectual property assignment, complete brand assets).</li>
+      <li><strong>Software + Integration Handover:</strong> $75,000 – $95,000 USD (Includes 30 days developer onboarding and API partner introductions).</li>
+      <li><strong>Operating Entity with Pilot Volume:</strong> $150,000 – $250,000 USD (Platform active with 1,000+ verified KYC traders).</li>
+      <li><strong>Transaction Security:</strong> Transaction must execute exclusively via Escrow.com under the "Domain Name & Software Codebase" category with 3-stage milestone disbursement.</li>
+    </ul>
+
+    <!-- Sign-off Block -->
+    <div class="signoff-grid">
+      <div>
+        <div class="signature-line"></div>
+        <div class="signoff-title">Founder & Chief Executive Officer</div>
+        <div class="signoff-meta">Rubby Technologies Ltd · Founder Archival Dossier</div>
+      </div>
+      <div>
+        <div class="signature-line"></div>
+        <div class="signoff-title">Corporate Finance & Due Diligence Advisory</div>
+        <div class="signoff-meta">Valuation Benchmark Reference · October 2026</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

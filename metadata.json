@@ -1,0 +1,6 @@
+{
+  "name": "Rubby",
+  "description": "A seamless, secure, and lightning-fast gift card trading platform that converts unused cards into cash instantly with multi-currency wallets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
